@@ -486,7 +486,6 @@
       <div class="nav-row">
         <button id="prev-btn" class="nav-btn" onclick="prevQuestion()" disabled>← 上一题</button>
         <span id="page-indicator" class="page-indicator"></span>
-        <button id="next-btn" class="nav-btn" onclick="nextQuestion()" disabled>下一题 →</button>
       </div>
     </div>
 
@@ -666,7 +665,6 @@
       }
 
       document.getElementById('prev-btn').disabled = currentQuestion === 0;
-      document.getElementById('next-btn').disabled = answers[currentQuestion] === null;
 
       const totalAnswered = answers.filter(a => a !== null).length;
       document.getElementById('page-indicator').textContent = `已答 ${totalAnswered} / 30`;
@@ -676,10 +674,13 @@
 
     function selectOption(index) {
       answers[currentQuestion] = index;
-      renderQuestion();
 
-      // 最后一题答完直接出结果
-      if (currentQuestion === 29) {
+      if (currentQuestion < 29) {
+        setTimeout(() => {
+          currentQuestion++;
+          renderQuestion();
+        }, 200);
+      } else {
         setTimeout(() => {
           calculateAndShowResult();
         }, 300);
@@ -689,13 +690,6 @@
     function prevQuestion() {
       if (currentQuestion > 0) {
         currentQuestion--;
-        renderQuestion();
-      }
-    }
-
-    function nextQuestion() {
-      if (currentQuestion < 29 && answers[currentQuestion] !== null) {
-        currentQuestion++;
         renderQuestion();
       }
     }
