@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>石勤心理测试</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500&family=Noto+Serif+SC:wght@400;600&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #FAFAFA;
+      --text-primary: #1A1A1A;
+      --text-secondary: #666666;
+      --border: #E0E0E0;
+      --accent: #000000;
+      --card: #FFFFFF;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Noto Sans SC', sans-serif;
+      background-color: var(--bg);
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 680px;
+      width: 100%;
+    }
+
+    /* ===== 封面页 ===== */
+    .page {
+      display: none;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+    }
+
+    .page.active {
+      display: block;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .cover-logo {
+      margin-bottom: 48px;
+    }
+
+    .cover-logo-main {
+      font-family: 'Noto Serif SC', serif;
+      font-size: 1.1rem;
+      font-weight: 600;
+      letter-spacing: 0.35em;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+
+    .cover-logo-line {
+      width: 32px;
+      height: 1px;
+      background: var(--text-primary);
+      margin: 12px 0;
+    }
+
+    .cover-logo-sub {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.65rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+    }
+
+    .cover-title {
+      font-family: 'Noto Serif SC', serif;
+      font-size: 2.8rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      margin-bottom: 16px;
+    }
+
+    .cover-subtitle {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.75rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      margin-bottom: 48px;
+    }
+
+    .cover-desc {
+      font-size: 1rem;
+      color: var(--text-secondary);
+      margin-bottom: 48px;
+      max-width: 480px;
+    }
+
+    .cover-meta {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      margin-bottom: 48px;
+    }
+
+    .cover-meta span {
+      display: inline-block;
+      margin-right: 24px;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 14px 48px;
+      background: var(--accent);
+      color: var(--card);
+      font-family: 'Noto Sans SC', sans-serif;
+      font-size: 0.9rem;
+      letter-spacing: 0.1em;
+      border: none;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+
+    .btn:hover {
+      opacity: 0.75;
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+    }
+
+    .btn-outline:hover {
+      background: var(--text-primary);
+      color: var(--card);
+      opacity: 1;
+    }
+
+    /* ===== 答题页 ===== */
+    .progress-wrap {
+      margin-bottom: 48px;
+    }
+
+    .progress-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 2px;
+      background: var(--border);
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--accent);
+      transition: width 0.3s ease;
+    }
+
+    .question-card {
+      background: var(--card);
+      padding: 40px;
+      border: 1px solid var(--border);
+      margin-bottom: 24px;
+    }
+
+    .question-num {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      color: var(--text-secondary);
+      margin-bottom: 20px;
+    }
+
+    .question-text {
+      font-family: 'Noto Serif SC', serif;
+      font-size: 1.25rem;
+      line-height: 1.8;
+      margin-bottom: 32px;
+    }
+
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .option {
+      display: flex;
+      align-items: center;
+      padding: 16px 20px;
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: all 0.15s;
+      position: relative;
+    }
+
+    .option:hover {
+      border-color: var(--text-primary);
+    }
+
+    .option.selected {
+      border-color: var(--accent);
+      background: var(--accent);
+      color: var(--card);
+    }
+
+    .option-letter {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 500;
+      width: 24px;
+      flex-shrink: 0;
+    }
+
+    .option-text {
+      font-size: 0.95rem;
+    }
+
+    .nav-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .nav-btn {
+      font-family: 'Noto Sans SC', sans-serif;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 8px 0;
+      transition: color 0.15s;
+    }
+
+    .nav-btn:hover {
+      color: var(--text-primary);
+    }
+
+    .nav-btn:disabled {
+      opacity: 0.3;
+      cursor: default;
+    }
+
+    .page-indicator {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+    }
+
+    /* ===== 结果页 ===== */
+    .result-header {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+
+    .result-title {
+      font-family: 'Noto Serif SC', serif;
+      font-size: 1.8rem;
+      margin-bottom: 8px;
+    }
+
+    .result-score {
+      font-family: 'Inter', sans-serif;
+      font-size: 3.5rem;
+      font-weight: 500;
+      letter-spacing: -0.02em;
+      margin: 24px 0;
+    }
+
+    .result-grade {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      letter-spacing: 0.2em;
+    }
+
+    .radar-wrap {
+      background: var(--card);
+      border: 1px solid var(--border);
+      padding: 40px;
+      margin-bottom: 24px;
+      display: flex;
+      justify-content: center;
+    }
+
+    #radarCanvas {
+      max-width: 320px;
+      max-height: 320px;
+    }
+
+    .dimensions {
+      background: var(--card);
+      border: 1px solid var(--border);
+      margin-bottom: 24px;
+    }
+
+    .dimension-item {
+      padding: 24px 32px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .dimension-item:last-child {
+      border-bottom: none;
+    }
+
+    .dimension-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .dimension-name {
+      font-size: 0.95rem;
+    }
+
+    .dimension-score {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+
+    .dimension-bar {
+      height: 2px;
+      background: var(--border);
+      margin-bottom: 8px;
+    }
+
+    .dimension-fill {
+      height: 100%;
+      background: var(--accent);
+      transition: width 0.6s ease;
+    }
+
+    .dimension-desc {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    .result-summary {
+      background: var(--card);
+      border: 1px solid var(--border);
+      padding: 40px;
+      margin-bottom: 24px;
+    }
+
+    .summary-title {
+      font-family: 'Noto Serif SC', serif;
+      font-size: 1rem;
+      margin-bottom: 16px;
+      letter-spacing: 0.1em;
+    }
+
+    .summary-text {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      line-height: 1.8;
+    }
+
+    .result-actions {
+      text-align: center;
+    }
+
+    .result-advice {
+      background: var(--card);
+      border: 1px solid var(--border);
+      padding: 40px;
+      margin-bottom: 24px;
+    }
+
+    .advice-header {
+      font-family: 'Noto Serif SC', serif;
+      font-size: 1rem;
+      margin-bottom: 20px;
+      letter-spacing: 0.1em;
+    }
+
+    .advice-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .advice-item {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      padding-left: 16px;
+      border-left: 2px solid var(--border);
+      line-height: 1.7;
+    }
+
+    .advice-item.dimension-label {
+      color: var(--text-primary);
+      font-weight: 500;
+      border-left-color: var(--accent);
+    }
+
+    /* ===== 响应式 ===== */
+    @media (max-width: 600px) {
+      .cover-title {
+        font-size: 2rem;
+      }
+
+      .question-card {
+        padding: 24px;
+      }
+
+      .question-text {
+        font-size: 1.1rem;
+      }
+
+      .radar-wrap {
+        padding: 24px;
+      }
+
+      .dimension-item {
+        padding: 20px 24px;
+      }
+
+      .result-summary {
+        padding: 24px;
+      }
+
+      .result-advice {
+        padding: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- 封面页 -->
+    <div id="page-cover" class="page active">
+      <div class="cover-logo">
+        <div class="cover-logo-main">石 勤</div>
+        <div class="cover-logo-line"></div>
+        <div class="cover-logo-sub">Shi Qin</div>
+      </div>
+      <h1 class="cover-title">石勤心理测试</h1>
+      <p class="cover-subtitle">Psychological Self-Assessment</p>
+      <p class="cover-desc">
+        这是一份综合心理健康测评，通过30道专业题目，从情绪管理、压力承受、人际关系、自我认知、环境适应五个维度，帮你全面了解当前的心理状态。
+      </p>
+      <p class="cover-meta">
+        <span>30 道题目</span>
+        <span>约 5 分钟</span>
+        <span>5 维度分析</span>
+      </p>
+      <button class="btn" onclick="startTest()">开始测评</button>
+    </div>
+
+    <!-- 答题页 -->
+    <div id="page-question" class="page">
+      <div class="progress-wrap">
+        <div class="progress-info">
+          <span id="progress-text">1 / 30</span>
+          <span id="progress-percent">0%</span>
+        </div>
+        <div class="progress-bar">
+          <div id="progress-fill" class="progress-fill" style="width: 0%"></div>
+        </div>
+      </div>
+
+      <div class="question-card">
+        <div id="question-num" class="question-num">Q1</div>
+        <div id="question-text" class="question-text"></div>
+        <div id="options" class="options"></div>
+      </div>
+
+      <div class="nav-row">
+        <button id="prev-btn" class="nav-btn" onclick="prevQuestion()" disabled>← 上一题</button>
+        <span id="page-indicator" class="page-indicator"></span>
+        <button id="next-btn" class="nav-btn" onclick="nextQuestion()" disabled>下一题 →</button>
+      </div>
+    </div>
+
+    <!-- 结果页 -->
+    <div id="page-result" class="page">
+      <div class="result-advice">
+        <div class="advice-header">石勤给你的建议</div>
+        <div id="advice-list" class="advice-list"></div>
+      </div>
+
+      <div class="result-header">
+        <div class="cover-logo" style="margin-bottom: 32px;">
+          <div class="cover-logo-main" style="font-size: 0.9rem;">石 勤</div>
+          <div class="cover-logo-line" style="margin: 8px 0;"></div>
+          <div class="cover-logo-sub">Shi Qin</div>
+        </div>
+        <h2 class="result-title">你的心理状态报告</h2>
+        <div id="result-score" class="result-score">--</div>
+        <div id="result-grade" class="result-grade"></div>
+      </div>
+
+      <div class="radar-wrap">
+        <canvas id="radarCanvas" width="320" height="320"></canvas>
+      </div>
+
+      <div id="dimensions" class="dimensions"></div>
+
+      <div class="result-summary">
+        <div class="summary-title">综合评估</div>
+        <p id="summary-text" class="summary-text"></p>
+      </div>
+
+      <div class="result-actions">
+        <button class="btn btn-outline" onclick="restartTest()">重新测评</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ===== 题目数据 =====
+    const questions = [
+      // 情绪管理 (Q1-Q6)
+      { id: 1, text: "遇到不顺心的事情时，你通常能够很快平复情绪吗？", dimension: 0 },
+      { id: 2, text: "在压力下，你是否会突然变得易怒或烦躁？", dimension: 0 },
+      { id: 3, text: "当事情没有按计划发展时，你能保持冷静并调整心态吗？", dimension: 0 },
+      { id: 4, text: "你是否会因为一些小事情而长时间感到沮丧？", dimension: 0 },
+      { id: 5, text: "面对突发状况时，你通常能够控制自己的情绪反应吗？", dimension: 0 },
+      { id: 6, text: "你是否会无缘无故地感到焦虑或不安？", dimension: 0 },
+
+      // 压力承受 (Q7-Q12)
+      { id: 7, text: "面对紧迫的截止日期，你通常能够保持工作效率吗？", dimension: 1 },
+      { id: 8, text: "当你承担多项任务时，是否会感到不堪重负？", dimension: 1 },
+      { id: 9, text: "在经历高压时期后，你能够较快恢复正常状态吗？", dimension: 1 },
+      { id: 10, text: "你是否会因为担心未来而影响当前的生活和睡眠？", dimension: 1 },
+      { id: 11, text: "面对困难和挑战，你倾向于积极面对还是回避？", dimension: 1 },
+      { id: 12, text: "当事情出错时，你是否会过度自责或感到无力？", dimension: 1 },
+
+      // 人际关系 (Q13-Q18)
+      { id: 13, text: "你能够轻松地与陌生人建立友好的交谈吗？", dimension: 2 },
+      { id: 14, text: "在与他人发生分歧时，你通常能够理性沟通吗？", dimension: 2 },
+      { id: 15, text: "你是否会因为害怕被否定而避免表达真实想法？", dimension: 2 },
+      { id: 16, text: "在社交场合中，你通常感到自在还是拘束？", dimension: 2 },
+      { id: 17, text: "你愿意主动向他人寻求帮助或支持吗？", dimension: 2 },
+      { id: 18, text: "你对他人的情绪和需求有较强的感知能力吗？", dimension: 2 },
+
+      // 自我认知 (Q19-Q24)
+      { id: 19, text: "你清楚地知道自己真正想要的是什么吗？", dimension: 3 },
+      { id: 20, text: "你能够坦然接受自己的缺点和不足吗？", dimension: 3 },
+      { id: 21, text: "你是否经常反思自己的行为和决策？", dimension: 3 },
+      { id: 22, text: "你对自己的未来有明确的方向和规划吗？", dimension: 3 },
+      { id: 23, text: "你会因为他人的评价而轻易改变对自己的看法吗？", dimension: 3 },
+      { id: 24, text: "你能够客观地看待自己的优点和成就吗？", dimension: 3 },
+
+      // 环境适应 (Q25-Q30)
+      { id: 25, text: "面对生活环境的重大变化，你能够较快适应吗？", dimension: 4 },
+      { id: 26, text: "当你处于陌生环境时，是否会感到不安或恐慌？", dimension: 4 },
+      { id: 27, text: "你能够灵活调整自己的计划以应对变化吗？", dimension: 4 },
+      { id: 28, text: "面对不确定性，你通常能够保持积极的心态吗？", dimension: 4 },
+      { id: 29, text: "你是否抗拒改变，倾向于维持现状？", dimension: 4 },
+      { id: 30, text: "在新环境中，你能够迅速找到自己的位置吗？", dimension: 4 },
+    ];
+
+    const dimensionNames = [
+      "情绪管理",
+      "压力承受",
+      "人际关系",
+      "自我认知",
+      "环境适应"
+    ];
+
+    const dimensionDescs = [
+      "情绪的稳定性与调控能力",
+      "对压力的感知与应对韧性",
+      "社交能力与人际适应性",
+      "对自身的了解与接纳程度",
+      "对变化和环境的适应能力"
+    ];
+
+    const summaries = {
+      excellent: "你的心理状态整体良好，具有较强的自我调节能力和环境适应力。继续保持现有的生活方式和心态，注重身心平衡。",
+      good: "你的心理状态基本健康，在多数情况下能够有效地管理情绪和应对压力。偶尔可能会受到外界影响而波动，建议保持自我觉察。",
+      moderate: "你目前承受着一定的心理压力，可能在某些维度上存在短板。建议正视自己的情绪和需求，必要时寻求专业支持。",
+      low: "你可能正面临较大的心理困扰，建议认真对待自己的感受。可以考虑与信任的人倾诉，或寻求心理咨询师的专业帮助。"
+    };
+
+    // 选项（反向计分题已在calcScore中处理）
+    const optionLetters = ["A", "B", "C", "D"];
+    const optionTexts = [
+      "非常符合",
+      "比较符合",
+      "比较不符合",
+      "非常不符合"
+    ];
+
+    // 反向计分题（题号从1开始）
+    const reverseScoreQuestions = [2, 4, 6, 8, 10, 12, 15, 17, 19, 23, 29];
+
+    // ===== 状态 =====
+    let currentQuestion = 0;
+    let answers = new Array(30).fill(null);
+    let scores = [0, 0, 0, 0, 0];
+
+    // ===== 工具函数 =====
+    function showPage(pageId, onShown) {
+      const allPages = document.querySelectorAll('.page');
+      const target = document.getElementById(pageId);
+
+      // 如果目标已是当前显示的页面，只执行回调
+      if (target.classList.contains('active')) {
+        if (onShown) requestAnimationFrame(() => requestAnimationFrame(onShown));
+        return;
+      }
+
+      // 1. 移除所有 active → 触发当前页淡出
+      allPages.forEach(p => {
+        if (p.classList.contains('active')) {
+          p.classList.remove('active');
+        }
+      });
+
+      // 2. 强制重绘，确保浏览器识别 CSS 过渡
+      void target.offsetWidth;
+
+      // 3. 给目标加 active → 触发目标页淡入
+      target.classList.add('active');
+
+      // 4. 回调（DOM 更新是同步的，回调只是确保在 RAF 之后）
+      if (onShown) {
+        requestAnimationFrame(() => requestAnimationFrame(onShown));
+      }
+    }
+
+    function updateProgress() {
+      const percent = Math.round((currentQuestion / 30) * 100);
+      document.getElementById('progress-text').textContent = `${currentQuestion + 1} / 30`;
+      document.getElementById('progress-percent').textContent = `${percent}%`;
+      document.getElementById('progress-fill').style.width = `${percent}%`;
+    }
+
+    function renderQuestion() {
+      const q = questions[currentQuestion];
+      document.getElementById('question-num').textContent = `Q${q.id}`;
+      document.getElementById('question-text').textContent = q.text;
+
+      const optionsEl = document.getElementById('options');
+      optionsEl.innerHTML = '';
+
+      for (let i = 0; i < 4; i++) {
+        const opt = document.createElement('div');
+        opt.className = 'option' + (answers[currentQuestion] === i ? ' selected' : '');
+        opt.innerHTML = `
+          <span class="option-letter">${optionLetters[i]}</span>
+          <span class="option-text">${optionTexts[i]}</span>
+        `;
+        opt.onclick = () => selectOption(i);
+        optionsEl.appendChild(opt);
+      }
+
+      document.getElementById('prev-btn').disabled = currentQuestion === 0;
+      document.getElementById('next-btn').disabled = answers[currentQuestion] === null;
+
+      const totalAnswered = answers.filter(a => a !== null).length;
+      document.getElementById('page-indicator').textContent = `已答 ${totalAnswered} / 30`;
+
+      updateProgress();
+    }
+
+    function selectOption(index) {
+      answers[currentQuestion] = index;
+      renderQuestion();
+
+      // 最后一题答完直接出结果
+      if (currentQuestion === 29) {
+        setTimeout(() => {
+          calculateAndShowResult();
+        }, 300);
+      }
+    }
+
+    function prevQuestion() {
+      if (currentQuestion > 0) {
+        currentQuestion--;
+        renderQuestion();
+      }
+    }
+
+    function nextQuestion() {
+      if (currentQuestion < 29 && answers[currentQuestion] !== null) {
+        currentQuestion++;
+        renderQuestion();
+      }
+    }
+
+    function calculateAndShowResult() {
+      // 计算各维度得分
+      scores = [0, 0, 0, 0, 0];
+      const dimCounts = [0, 0, 0, 0, 0];
+
+      for (let i = 0; i < 30; i++) {
+        const dim = questions[i].dimension;
+        let rawScore = answers[i]; // 0-3
+
+        // 正向题翻转（A=0需要变成高分），反向题不翻转（A=0本身就是高关注）
+        if (!reverseScoreQuestions.includes(i + 1)) {
+          rawScore = 3 - rawScore;
+        }
+
+        scores[dim] += rawScore + 1; // 转为1-4分
+        dimCounts[dim]++;
+      }
+
+      // 归一化到0-100
+      const normalizedScores = scores.map((s, i) => {
+        const max = dimCounts[i] * 4;
+        return Math.round((s / max) * 100);
+      });
+
+      const overallScore = Math.round(normalizedScores.reduce((a, b) => a + b, 0) / 5);
+
+      // 确定等级
+      let grade, summary;
+      if (overallScore >= 80) {
+        grade = "心理状态优良";
+        summary = summaries.excellent;
+      } else if (overallScore >= 65) {
+        grade = "心理状态良好";
+        summary = summaries.good;
+      } else if (overallScore >= 50) {
+        grade = "心理状态一般";
+        summary = summaries.moderate;
+      } else {
+        grade = "需要关注";
+        summary = summaries.low;
+      }
+
+      // 更新UI
+      document.getElementById('result-score').textContent = overallScore;
+      document.getElementById('result-grade').textContent = grade;
+      document.getElementById('summary-text').textContent = summary;
+
+      // 生成石勤的建议
+      const adviceList = [];
+      for (let i = 0; i < 5; i++) {
+        if (normalizedScores[i] < 50) {
+          adviceList.push({ dim: i, level: 'low' });
+        } else if (normalizedScores[i] < 70) {
+          adviceList.push({ dim: i, level: 'mid' });
+        }
+      }
+
+      const adviceTexts = [
+        // 情绪管理
+        { low: "情绪波动较大，建议每天留出5-10分钟进行深呼吸或冥想练习，帮助平复情绪。", mid: "情绪稳定性有提升空间，尝试记录情绪日记，观察触发情绪波动的规律。" },
+        // 压力承受
+        { low: "压力感明显，建议适当降低期望值，学会说'不'，给自己留出喘息空间。", mid: "压力应对能力可进一步加强，建议尝试时间管理四象限法，分清主次。" },
+        // 人际关系
+        { low: "人际关系可能让你感到疲惫，建议主动维护1-2段深度关系，而非广泛社交。", mid: "社交能力尚可，建议多倾听少表达，尝试理解他人立场而非急于说服。" },
+        // 自我认知
+        { low: "自我认知尚不清晰，建议通过读书、测评或与信任的人交流，加深自我了解。", mid: "自我认知有一定基础，建议定期反思自己的价值观和长期目标。" },
+        // 环境适应
+        { low: "面对变化容易感到不安，建议从小事做起主动拥抱变化，建立心理韧性。", mid: "适应能力尚可，建议保持开放心态，把变化视为成长机会而非威胁。" }
+      ];
+
+      const adviceItems = [];
+      if (adviceList.length === 0) {
+        adviceItems.push({ dim: -1, text: "整体状态良好，继续保持现有生活方式，适时复盘即可。" });
+      } else {
+        adviceList.forEach(item => {
+          const txt = adviceTexts[item.dim][item.level];
+          adviceItems.push({ dim: item.dim, text: txt });
+        });
+      }
+
+      const adviceEl = document.getElementById('advice-list');
+      adviceEl.innerHTML = '';
+      adviceItems.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'advice-item' + (item.dim >= 0 ? ' dimension-label' : '');
+        div.textContent = item.dim >= 0 ? `${dimensionNames[item.dim]}：${item.text}` : item.text;
+        adviceEl.appendChild(div);
+      });
+
+      // 渲染维度
+      const dimsEl = document.getElementById('dimensions');
+      dimsEl.innerHTML = '';
+
+      for (let i = 0; i < 5; i++) {
+        const level = normalizedScores[i] >= 70 ? "良好" : normalizedScores[i] >= 50 ? "中等" : "待提升";
+        const item = document.createElement('div');
+        item.className = 'dimension-item';
+        item.innerHTML = `
+          <div class="dimension-header">
+            <span class="dimension-name">${dimensionNames[i]}</span>
+            <span class="dimension-score">${normalizedScores[i]}分 · ${level}</span>
+          </div>
+          <div class="dimension-bar">
+            <div class="dimension-fill" style="width: 0%"></div>
+          </div>
+          <div class="dimension-desc">${dimensionDescs[i]}</div>
+        `;
+        dimsEl.appendChild(item);
+      }
+
+      // 渲染雷达图
+      showPage('page-result');
+
+      // 延迟动画
+      setTimeout(() => {
+        drawRadar(normalizedScores);
+
+        // 维度条动画
+        document.querySelectorAll('.dimension-fill').forEach((bar, i) => {
+          setTimeout(() => {
+            bar.style.width = normalizedScores[i] + '%';
+          }, i * 100);
+        });
+      }, 100);
+    }
+
+    function drawRadar(scores) {
+      const canvas = document.getElementById('radarCanvas');
+      const ctx = canvas.getContext('2d');
+      const w = canvas.width;
+      const h = canvas.height;
+      const cx = w / 2;
+      const cy = h / 2;
+      const maxR = Math.min(w, h) / 2 - 40;
+      const n = 5;
+      const angleStep = (Math.PI * 2) / n;
+
+      ctx.clearRect(0, 0, w, h);
+
+      // 背景圈
+      ctx.strokeStyle = '#E0E0E0';
+      ctx.lineWidth = 1;
+      for (let r = 1; r <= 4; r++) {
+        ctx.beginPath();
+        for (let i = 0; i <= n; i++) {
+          const angle = i * angleStep - Math.PI / 2;
+          const px = cx + Math.cos(angle) * (maxR * r / 4);
+          const py = cy + Math.sin(angle) * (maxR * r / 4);
+          if (i === 0) ctx.moveTo(px, py);
+          else ctx.lineTo(px, py);
+        }
+        ctx.closePath();
+        ctx.stroke();
+      }
+
+      // 轴线
+      for (let i = 0; i < n; i++) {
+        const angle = i * angleStep - Math.PI / 2;
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.lineTo(cx + Math.cos(angle) * maxR, cy + Math.sin(angle) * maxR);
+        ctx.stroke();
+      }
+
+      // 数据区域
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.06)';
+      ctx.strokeStyle = '#000000';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      for (let i = 0; i < n; i++) {
+        const angle = i * angleStep - Math.PI / 2;
+        const r = maxR * scores[i] / 100;
+        const px = cx + Math.cos(angle) * r;
+        const py = cy + Math.sin(angle) * r;
+        if (i === 0) ctx.moveTo(px, py);
+        else ctx.lineTo(px, py);
+      }
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+
+      // 数据点
+      ctx.fillStyle = '#000000';
+      for (let i = 0; i < n; i++) {
+        const angle = i * angleStep - Math.PI / 2;
+        const r = maxR * scores[i] / 100;
+        const px = cx + Math.cos(angle) * r;
+        const py = cy + Math.sin(angle) * r;
+        ctx.beginPath();
+        ctx.arc(px, py, 4, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // 标签
+      ctx.fillStyle = '#666666';
+      ctx.font = '12px "Noto Sans SC", sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      for (let i = 0; i < n; i++) {
+        const angle = i * angleStep - Math.PI / 2;
+        const px = cx + Math.cos(angle) * (maxR + 24);
+        const py = cy + Math.sin(angle) * (maxR + 24);
+        ctx.fillText(dimensionNames[i], px, py);
+      }
+    }
+
+    function startTest() {
+      currentQuestion = 0;
+      answers = new Array(30).fill(null);
+      showPage('page-question', () => {
+        renderQuestion();
+      });
+    }
+
+    function restartTest() {
+      scores = [0, 0, 0, 0, 0];
+      document.getElementById('dimensions').innerHTML = '';
+      document.querySelectorAll('.dimension-fill').forEach(bar => {
+        bar.style.width = '0%';
+      });
+      startTest();
+    }
+  </script>
+</body>
+</html>
